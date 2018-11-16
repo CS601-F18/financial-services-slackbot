@@ -47,11 +47,13 @@ public class TransactionHandler extends HttpServlet{
         String[] parameters = test.split("&");
         for (String i: parameters) {
         	System.out.println(i);
-        		String[] splitArguments = i.split(":");
+        		String[] splitArguments = i.split("=");
         		arguments.put(splitArguments[0], splitArguments[1]);
         }
         System.out.println("Input: " + test);
         System.out.println("text: " + arguments.get("text"));
+        
+        /* Now save the text to the database */
     }
     
     private String parseText(String text) {
