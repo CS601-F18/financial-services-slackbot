@@ -6,11 +6,15 @@ import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import cs601.project4.servlets.BlockingServlet;
+import cs601.project4.slackbot.EventHandler;
+import cs601.project4.slackbot.HomeHandler;
 import cs601.project4.slackbot.OauthConfirm;
 import cs601.project4.slackbot.OauthConfirmStep2;
+import cs601.project4.slackbot.SignInHandler;
 import cs601.project4.slackbot.Slackbot;
 import cs601.project4.slackbot.TransactionHandler;
 
+/* https://25badcb0.ngrok.io/signin */
 public class JettyServer {
     private Server server;
  
@@ -31,8 +35,12 @@ public class JettyServer {
         servletHandler.addServletWithMapping(BlockingServlet.class, "/status");
         servletHandler.addServletWithMapping(Slackbot.class, "/slackbot");
         servletHandler.addServletWithMapping(TransactionHandler.class, "/rtm");
-        servletHandler.addServletWithMapping(OauthConfirm.class, "/slackbot/oauthconfirm");
-        servletHandler.addServletWithMapping(OauthConfirmStep2.class, "/oauthconfirm2");
+        servletHandler.addServletWithMapping(OauthConfirm.class, "/auth");
+        servletHandler.addServletWithMapping(OauthConfirmStep2.class, "/auth/confirm");
+        servletHandler.addServletWithMapping(EventHandler.class, "/event");
+        servletHandler.addServletWithMapping(SignInHandler.class, "/signin");
+        servletHandler.addServletWithMapping(HomeHandler.class, "/auth/confirm/home");
+        
         server.start();
     }
 }

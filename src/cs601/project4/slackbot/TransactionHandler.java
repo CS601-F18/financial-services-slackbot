@@ -38,7 +38,6 @@ public class TransactionHandler extends HttpServlet{
       throws ServletException, IOException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("Hi Im michael");
         request.getAttribute("text");
         /* Cite: https://stackoverflow.com/questions/8100634/get-the-post-request-body-from-httpservletrequest */
         String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -52,8 +51,10 @@ public class TransactionHandler extends HttpServlet{
         }
         System.out.println("Input: " + test);
         System.out.println("text: " + arguments.get("text"));
+        response.getWriter().println("You said: " + arguments.get("text"));
         
         /* Now save the text to the database */
+        
     }
     
     private String parseText(String text) {

@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Example {
+public class SideProjectDB {
 	public static void main(String[] args) throws SQLException {
 		String username  = "user05";
 		String password  = "user05";

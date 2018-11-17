@@ -10,12 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** 
- * Hits the https://slack.com/api/rtm.connect endpoint. 
- * Bot will message user.
- * 
- * **/
-public class RealTimeMessaging extends HttpServlet{
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+public class EventHandler extends HttpServlet {
 	protected void doGet( HttpServletRequest request, 
     		HttpServletResponse response)
       throws ServletException, IOException {
@@ -34,21 +33,24 @@ public class RealTimeMessaging extends HttpServlet{
     protected void doPost( HttpServletRequest request, 
     		HttpServletResponse response)
       throws ServletException, IOException {
-        response.setContentType("application/json");
+        String getBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        JsonParser parser = new JsonParser();
+        JsonObject jsonBody = (JsonObject) parser.parse(getBody);
+        System.out.println(jsonBody);
+        String challenge;
+        response.setContentType("application/x-www-form-urlencoded");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("Hi Im michael");
-        request.getAttribute("text");
-        String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        System.out.println("post request");
-        System.out.println("Length" + request.getContentLength());
-        System.out.println("Input: " + test);
-        System.out.println("text" + request.getAttribute("text"));
-        System.out.println(request.getQueryString());
-        System.out.println(request.getParameter("Token"));
-    }
-    
-    private String parseText(String text) {
-    		String output = "";
-    		return output;
+        /* Check for challenge token */
+        if (jsonBody.get("challenge") != null) {
+        		challenge = jsonBody.get("challenge").getAsString();
+             response.getWriter().println(challenge);
+             System.out.println("challenge" + request.getAttribute("challenge"));
+        }
+        
+        // if (jsonBody.get(""))
+        
+
+
+
     }
 }
