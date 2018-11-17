@@ -20,7 +20,7 @@ public class OauthConfirm extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         System.out.println(response.toString());
-        response.sendRedirect("https://slack.com/oauth/authorize?client_id=" + Constants.CLIENT_ID + "&scope=" + Constants.SCOPE + "&redirect_uri=" + Constants.REDIRECT_HOME);
+        response.sendRedirect("https://slack.com/oauth/authorize?client_id=" + Constants.CLIENT_ID + "&scope=" + Constants.SCOPE + "&redirect_uri=https://25badcb0.ngrok.io/auth/confirm");
         System.out.println("Oauth 1 hit");
     }
     

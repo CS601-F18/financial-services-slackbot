@@ -17,7 +17,7 @@ public class SignInHandler extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(""
-        		+ "<a href=\"https://slack.com/oauth/authorize?scope=identity.basic&client_id=" + Constants.CLIENT_ID + "&redirect_uri=" + Constants.REDIRECT_HOME + "\">"
+        		+ "<a href=\"https://slack.com/oauth/authorize?scope=identity.basic&client_id=" + Constants.CLIENT_ID + "&redirect_uri=" + Constants.REDIRECT+ "\">"
         		+ "<img src=\"https://api.slack.com/img/sign_in_with_slack.png\" />"
         		+ "</a>");
     }

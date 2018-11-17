@@ -25,10 +25,10 @@ public class OauthConfirmStep2 extends HttpServlet {
         System.out.println(request.getParameter("code"));
         /* Not sure if this is working correctly */
         /* Send with code to finish authentication */
-//        URL url = new URL("https://slack.com/api/oauth.access?code=" + request.getParameter("code") + "&client_id=" + Constants.CLIENT_ID + "&client_secret=" + Constants.CLIENT_SECRET + "&redirect_uri=" + Constants.REDIRECT);
-//        HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
-//        connect.getResponseCode();
-       response.sendRedirect("https://slack.com/api/oauth.access?code=" + request.getParameter("code") + "&client_id=" +Constants.CLIENT_ID + "&client_secret=" + Constants.CLIENT_SECRET + "&redirect_uri=" + Constants.REDIRECT);
+        URL url = new URL("https://slack.com/api/oauth.access?code=" + request.getParameter("code") + "&client_id=" +Constants.CLIENT_ID + "&client_secret=" + Constants.CLIENT_SECRET + "&redirect_uri=" + Constants.REDIRECT);
+        HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
+        connect.getResponseCode();
+       // response.sendRedirect("https://slack.com/api/oauth.access?code=" + request.getParameter("code") + "&client_id=" +Constants.CLIENT_ID + "&client_secret=" + Constants.CLIENT_SECRET + "&redirect_uri=" + Constants.REDIRECT);
         System.out.println("oauth confirm step 2 handler hit");
     }
     
