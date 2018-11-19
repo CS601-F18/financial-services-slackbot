@@ -34,7 +34,7 @@ public class JettyServer {
 
         servletHandler.addServletWithMapping(BlockingServlet.class, "/status");
         servletHandler.addServletWithMapping(Slackbot.class, "/slackbot");
-        servletHandler.addServletWithMapping(TransactionHandler.class, "/rtm");
+        servletHandler.addServletWithMapping(TransactionHandler.class, "/transaction");
         servletHandler.addServletWithMapping(OauthConfirm.class, "/auth");
         servletHandler.addServletWithMapping(OauthConfirmStep2.class, "/auth/confirm");
         servletHandler.addServletWithMapping(EventHandler.class, "/event");

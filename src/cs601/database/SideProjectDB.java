@@ -29,7 +29,6 @@ public class SideProjectDB {
 		//Must set time zone explicitly in newer versions of mySQL.
 		String timeZoneSettings = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
-
 		Connection con = DriverManager.getConnection(urlString+timeZoneSettings,
 				username,
 				password);
