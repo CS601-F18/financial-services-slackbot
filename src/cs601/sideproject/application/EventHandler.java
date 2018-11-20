@@ -1,4 +1,4 @@
-package cs601.project4.slackbot;
+package cs601.sideproject.application;
 
 import java.io.IOException;
 import java.net.URL;
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 

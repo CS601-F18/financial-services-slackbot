@@ -1,4 +1,4 @@
-package cs601.project4.slackbot;
+package cs601.sideproject.application;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +19,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import cs601.database.Database;
-import cs601.database.User;
-import cs601.project4.slackbot.Constants;
+import cs601.sideproject.application.Constants;
+import cs601.sideproject.database.Database;
+import cs601.sideproject.database.User;
 
 /**
  * Oauth Authentication is a two part process. After the first part 
@@ -48,9 +48,7 @@ public class OauthConfirmStep2 extends HttpServlet {
         InputStream in = connect.getInputStream();
         String encoding = connect.getContentEncoding();
         String body = IOUtils.toString(in, encoding);
-        System.out.println(body);
         /* Now get all that JSON Data because we need to save it */
-
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonBody = (JsonObject) jsonParser.parse(body);
         User user = createUser(jsonBody);
@@ -67,7 +65,9 @@ public class OauthConfirmStep2 extends HttpServlet {
 						e.printStackTrace();
 					}
         		}
-        		/* Just add the cookie and login */
+                /* If they don't have the token, go through sign in process, and log
+                 * them in if they have an account already. Then give them the token.
+                 *  */
         } else if(authenticateByLogin(db, jsonBody)) {
 	        	if (jsonBody.get("access_token") != null) {
 	        		String accessToken = jsonBody.get("access_token").getAsString();
@@ -83,7 +83,9 @@ public class OauthConfirmStep2 extends HttpServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-        	/* Else just make a new account */
+	            /* If they don't have an account already, make them an account and give them
+	             * the token.
+	             */
         } else {
 	        	if (user != null) {
 	    		    try {
@@ -104,21 +106,8 @@ public class OauthConfirmStep2 extends HttpServlet {
 	        }
         }
         
-        /* If they don't have the token, go through sign in process, and log
-         * them in if they have an account already. Then give them the token.
-         *  */
-        
-        
-        /* If they don't have an account already, make them an account and give them
-         * the token.
-         */
-        
-        
-
 	    
         /* Check DB for existing users and check for null first */
-	    
-       System.out.println("oauth confirm step 2 handler hit");
     	}
     
     protected void doPost( HttpServletRequest request, 
@@ -127,10 +116,6 @@ public class OauthConfirmStep2 extends HttpServlet {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println("{ \"status\": \"ok\"}");
-        System.out.println("post request");
-        System.out.println(request.getContentLength());
-        System.out.println(request.getQueryString());
-        System.out.println(request.getParameter("Token"));
     }
     
     private User createUser(JsonObject jsonBody) {
@@ -162,20 +147,18 @@ public class OauthConfirmStep2 extends HttpServlet {
 		if(jsonBody.get("access_token") == null) {
 			return false;
 		}
-    	try {
-
+    		try {
 			if (db.getDBManager().authenticate(jsonBody.get("access_token").getAsString())) {
 				return true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	return false;
+    		return false;
     }
     
     private boolean authenticateByLogin(Database db, JsonObject jsonBody) {
-    	try {
+    		try {
 			if (db.getDBManager().authenticate(jsonBody.get("slack_id").getAsString())) {
 				return true;
 			}
@@ -183,16 +166,7 @@ public class OauthConfirmStep2 extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	return false;
-    }
-    
-    private void signIn() {
-    	
-    }
-    
-    private void signUp() {
-    	
-    }
-    
+    		return false;
+    	}
     
 }

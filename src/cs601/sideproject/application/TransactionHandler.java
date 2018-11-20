@@ -1,4 +1,4 @@
-package cs601.project4.slackbot;
+package cs601.sideproject.application;
 
 import java.io.IOException;
 import java.net.URL;
@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cs601.database.Database;
-import cs601.database.Transaction;
-import cs601.project4.slackbot.Constants;
+import cs601.sideproject.application.Constants;
+import cs601.sideproject.database.Database;
+import cs601.sideproject.database.Transaction;
 
 /**
  * Required syntax (add): /transaction "charge $5 for ice cream"

@@ -1,9 +1,11 @@
-package Server;
+package cs601.sideproject.server;
 
-import cs601.database.Database;
+import cs601.sideproject.database.Database;
 
 /**
- * The simplest possible Jetty server.
+ * Start Jetty Server and Create instance of Database
+ * 
+ * @author nkebbas
  */
 public class StartServer {
 

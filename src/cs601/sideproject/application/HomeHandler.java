@@ -1,4 +1,4 @@
-package cs601.project4.slackbot;
+package cs601.sideproject.application;
 
 import java.io.IOException;
 import java.util.stream.Collectors;

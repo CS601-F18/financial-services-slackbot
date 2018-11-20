@@ -1,4 +1,4 @@
-package cs601.database;
+package cs601.sideproject.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import cs601.database.User;
+import cs601.sideproject.database.User;
 
 
 

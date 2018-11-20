@@ -1,4 +1,4 @@
-package cs601.project4.slackbot;
+package cs601.sideproject.application;
 
 import java.io.IOException;
 
@@ -7,21 +7,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * This authenticates the app to retrieve the authentication token necessary 
- * for the bot to work in the workspace.
- * @author nkebbas
- *
- */
-public class OauthConfirm extends HttpServlet {
-	protected void doGet( HttpServletRequest request, 
+public class Slackbot extends HttpServlet {
+
+    protected void doGet( HttpServletRequest request, 
     		HttpServletResponse response)
       throws ServletException, IOException {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
-        System.out.println(response.toString());
-        response.sendRedirect("https://slack.com/oauth/authorize?client_id=" + Constants.CLIENT_ID + "&scope=" + Constants.SCOPE + "&redirect_uri=https://25badcb0.ngrok.io/auth/confirm");
-        System.out.println("Oauth 1 hit");
+        response.getWriter().println(""
+        		+ "<a href=\"https://slack.com/oauth/authorize?scope=identity.basic&client_id=" + Constants.CLIENT_ID + "\">"
+        		+ "<img src=\"https://api.slack.com/img/sign_in_with_slack.png\" />"
+        		+ "</a>");
     }
     
     protected void doPost( HttpServletRequest request, 

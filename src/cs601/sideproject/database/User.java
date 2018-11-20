@@ -1,4 +1,4 @@
-package cs601.database;
+package cs601.sideproject.database;
 
 public class User {
 	private String id;

@@ -1,10 +1,10 @@
-package cs601.database;
+package cs601.sideproject.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import cs601.database.DBConstants;
+import cs601.sideproject.database.DBConstants;
 
 public final class Database {
 	private static Database INSTANCE;
