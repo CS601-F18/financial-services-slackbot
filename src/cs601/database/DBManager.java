@@ -6,6 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import cs601.database.User;
+
+
+
 /**
  * Use the singleton here.
  * 
@@ -92,19 +96,33 @@ public class DBManager {
 		return false;
 	}
 	
-	public ArrayList<String> getAllUserTransactions(String userId) throws SQLException {
+	public String getAllUserTransactions(String userId) throws SQLException {
 		System.out.println ("User id:" + userId); 
+		String output ="";
 		String selectStmt = "SELECT * FROM transactions"; 
 		PreparedStatement stmt = con.prepareStatement(selectStmt);
 		ResultSet result = stmt.executeQuery();
-		ArrayList<String> transactions = new ArrayList<String>();
 		while (result.next()) {
 			String id = result.getString("user_id");
 			if (userId.equals(id)) {
-				System.out.println(result);
+				String operation = result.getString("operation");
+				String value = result.getString("value");
+				String description = result.getString("description");
+			
+				if (operation.contains("charge") || operation.contains("buy")) {
+					output += "<p>Charge $";
+				} else if (operation.contains("credit") || operation.contains("sell")) {
+					output += "Credit $";
+				}
+				output+= value;
+				output+= " for " + description; 
+				output += "</p>";
 			}
 		}
-		return null;
+		if (output.equals("")) {
+			output += "<p>No transactions recorded. Please record some in slack.</p>";
+		}
+		return output;
 	}
 	
 	

@@ -21,6 +21,7 @@ import com.google.gson.JsonParser;
 
 import cs601.database.Database;
 import cs601.database.User;
+import cs601.project4.slackbot.Constants;
 
 /**
  * Oauth Authentication is a two part process. After the first part 
@@ -60,7 +61,7 @@ public class OauthConfirmStep2 extends HttpServlet {
         			try {
         				JsonObject userObject = (JsonObject) jsonBody.get("user");
         				String userId = userObject.get("id").getAsString();
-					db.getDBManager().getAllUserTransactions(userId);
+        				response.getOutputStream().println(db.getDBManager().getAllUserTransactions(userId));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -77,7 +78,7 @@ public class OauthConfirmStep2 extends HttpServlet {
 	        	try {
 	        		JsonObject userObject = (JsonObject) jsonBody.get("user");
     				String userId = userObject.get("id").getAsString();
-				db.getDBManager().getAllUserTransactions(userId);
+    				response.getOutputStream().println(db.getDBManager().getAllUserTransactions(userId));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -89,7 +90,7 @@ public class OauthConfirmStep2 extends HttpServlet {
 	    				db.getDBManager().createUser(user, "spusers");
 	    				JsonObject userObject = (JsonObject) jsonBody.get("user");
         				String userId = userObject.get("id").getAsString();
-					db.getDBManager().getAllUserTransactions(userId);
+        				response.getOutputStream().println(db.getDBManager().getAllUserTransactions(userId));
 	    			} catch (SQLException e) {
 	    				// TODO Auto-generated catch block
 	    				e.printStackTrace();
@@ -158,7 +159,11 @@ public class OauthConfirmStep2 extends HttpServlet {
     }
     
     private boolean authenticateByToken(Database db, JsonObject jsonBody) {
+		if(jsonBody.get("access_token") == null) {
+			return false;
+		}
     	try {
+
 			if (db.getDBManager().authenticate(jsonBody.get("access_token").getAsString())) {
 				return true;
 			}
