@@ -65,27 +65,6 @@ public class OauthConfirmStep2 extends HttpServlet {
 						e.printStackTrace();
 					}
         		}
-                /* If they don't have the token, go through sign in process, and log
-                 * them in if they have an account already. Then give them the token.
-                 *  */
-        } else if(authenticateByLogin(db, jsonBody)) {
-	        	if (jsonBody.get("access_token") != null) {
-	        		String accessToken = jsonBody.get("access_token").getAsString();
-	        		user.setAccessToken(accessToken);
-	    	        Cookie cookie = addAccessTokenCookie(accessToken);
-	    	        response.addCookie(cookie);
-	        }
-	        	try {
-	        		JsonObject userObject = (JsonObject) jsonBody.get("user");
-    				String userId = userObject.get("id").getAsString();
-    				response.getOutputStream().println(db.getDBManager().getAllUserTransactions(userId));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	            /* If they don't have an account already, make them an account and give them
-	             * the token.
-	             */
         } else {
 	        	if (user != null) {
 	    		    try {
@@ -158,6 +137,7 @@ public class OauthConfirmStep2 extends HttpServlet {
     }
     
     private boolean authenticateByLogin(Database db, JsonObject jsonBody) {
+    	System.out.println(jsonBody.get("slack_id"));
     		try {
 			if (db.getDBManager().authenticate(jsonBody.get("slack_id").getAsString())) {
 				return true;

@@ -1,5 +1,10 @@
 package cs601.sideproject.database;
 
+/**
+ * Use the singleton here.
+ * 
+ * @author nkebbas
+ * */
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -40,7 +45,6 @@ public final class Database {
 		String urlString = "jdbc:mysql://127.0.0.1:3306/"+DBConstants.DB;
 		//Must set time zone explicitly in newer versions of mySQL.
 		String timeZoneSettings = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-
 
 		try {
 			con = DriverManager.getConnection(urlString+timeZoneSettings,

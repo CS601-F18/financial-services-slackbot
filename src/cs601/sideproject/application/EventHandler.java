@@ -14,20 +14,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class EventHandler extends HttpServlet {
-	protected void doGet( HttpServletRequest request, 
-    		HttpServletResponse response)
-      throws ServletException, IOException {
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        
-        System.out.println(request.toString());
-        URL url;
-        url = new URL(Constants.API_DESTINATION_RTM + "?token=" + Constants.BOT_TOKEN);
-        HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
-        connect.getResponseCode();
-        System.out.println("get request" + url);
-        System.out.println(connect.getResponseCode());
-    }
     
     protected void doPost( HttpServletRequest request, 
     		HttpServletResponse response)
@@ -35,7 +21,6 @@ public class EventHandler extends HttpServlet {
         String getBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         JsonParser parser = new JsonParser();
         JsonObject jsonBody = (JsonObject) parser.parse(getBody);
-        System.out.println(jsonBody);
         String challenge;
         response.setContentType("application/x-www-form-urlencoded");
         response.setStatus(HttpServletResponse.SC_OK);
@@ -46,10 +31,5 @@ public class EventHandler extends HttpServlet {
              System.out.println("challenge" + request.getAttribute("challenge"));
         }
         
-        // if (jsonBody.get(""))
-        
-
-
-
     }
 }

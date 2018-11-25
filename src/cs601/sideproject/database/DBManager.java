@@ -55,6 +55,19 @@ public class DBManager {
 		updateStmt.execute();	
 	}
 	
+	public void testJoin(String field1, String field2, String tableName, String command) throws SQLException {
+		PreparedStatement updateStmt = con.prepareStatement("SELECT " + field1 + ", " + field2 + " FROM " + tableName + " " + command);
+		//print the updated table
+		ResultSet result = updateStmt.executeQuery();
+		
+		while (result.next()) {
+			String nameres = result.getString("name");
+			String emailres = result.getString("email");
+			//int idres = result.getInt("id");
+			System.out.printf("name: %s email: %s \n" , nameres, emailres);
+		}
+	}
+	
 	public Event getEvent() {
 		return null;
 	}
@@ -69,13 +82,20 @@ public class DBManager {
 		return null;
 	}
 	
-	/* Sign user in, don't create user. Then we can get all the transactions */
+	/* Sign user in, don't create user. Then we can get all the transactions
+	 * This is broken because i shouldnt use accesstoken as cookie because
+	 * that expires quickly
+	 * 
+	 *  */
+	
 	public boolean authenticate(String accessToken) throws SQLException {
 		String selectStmt = "SELECT * FROM spusers";
 		PreparedStatement stmt = con.prepareStatement(selectStmt);
 		ResultSet result = stmt.executeQuery();
 		while (result.next()) {
 			String dbToken= result.getString("access_token");
+			System.out.println("db: " + dbToken);
+			System.out.println("access" + accessToken);
 			if (accessToken.equals(dbToken) ) {
 				return true;
 			}

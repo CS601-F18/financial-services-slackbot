@@ -5,10 +5,12 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import cs601.sideproject.application.EventHandler;
+import cs601.sideproject.application.GetPricesHandler;
+import cs601.sideproject.application.GetStocksHandler;
 import cs601.sideproject.application.HomeHandler;
 import cs601.sideproject.application.OauthConfirm;
 import cs601.sideproject.application.OauthConfirmStep2;
+import cs601.sideproject.application.RealTimeMessaging;
 import cs601.sideproject.application.SignInHandler;
 import cs601.sideproject.application.Slackbot;
 import cs601.sideproject.application.TransactionHandler;
@@ -33,12 +35,13 @@ public class JettyServer {
 
         servletHandler.addServletWithMapping(Slackbot.class, "/slackbot");
         servletHandler.addServletWithMapping(TransactionHandler.class, "/transaction");
+        servletHandler.addServletWithMapping(GetPricesHandler.class, "/prices");
         servletHandler.addServletWithMapping(OauthConfirm.class, "/auth");
         servletHandler.addServletWithMapping(OauthConfirmStep2.class, "/auth/confirm");
-        servletHandler.addServletWithMapping(EventHandler.class, "/event");
+        servletHandler.addServletWithMapping(RealTimeMessaging.class, "/event");
+        servletHandler.addServletWithMapping(GetStocksHandler.class, "/stocks");
         servletHandler.addServletWithMapping(SignInHandler.class, "/signin");
         servletHandler.addServletWithMapping(HomeHandler.class, "/auth/confirm/home");
-        
         server.start();
     }
 }

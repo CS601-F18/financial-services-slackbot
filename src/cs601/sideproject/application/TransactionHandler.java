@@ -34,8 +34,6 @@ public class TransactionHandler extends HttpServlet{
       throws ServletException, IOException {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
-        
-        System.out.println(request.toString());
         URL url;
         url = new URL(Constants.API_DESTINATION_RTM + "?token=" + Constants.BOT_TOKEN);
         HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
@@ -51,42 +49,48 @@ public class TransactionHandler extends HttpServlet{
         response.setStatus(HttpServletResponse.SC_OK);
         request.getAttribute("text");
         /* Cite: https://stackoverflow.com/questions/8100634/get-the-post-request-body-from-httpservletrequest */
-        String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        String[] parameters = test.split("&");
+        String text = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        String[] parameters = text.split("&");
         for (String i: parameters) {
         		String[] splitArguments = i.split("=");
         		arguments.put(splitArguments[0], splitArguments[1]);
         }
+        
         response.getWriter().println("You said: " + arguments.get("text"));
-        parseTextIntoHashMap(arguments.get("text"));
-        Transaction t = new Transaction(arguments.get("user_id"), Float.parseFloat(arguments.get("value")), arguments.get("operation"));
-        
-        /* Get the db connection to add the user info */
-	    Database db = Database.getInstance();
-        
-	    try {
-			db.getDBManager().createTransaction(t, "transactions");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        if (parseTextIntoHashMap(arguments.get("text"))) {
+        	 	Transaction t = new Transaction(arguments.get("user_id"), Float.parseFloat(arguments.get("value")), arguments.get("operation"));
+         
+	        /* Get the db connection to add the user info */
+		    Database db = Database.getInstance();
+	        
+		    try {
+				db.getDBManager().createTransaction(t, "transactions");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
         
        // response.sendRedirect("https://slack.com/api/oauth.access?code=" + request.getParameter("code") + "&client_id=" +Constants.CLIENT_ID + "&client_secret=" + Constants.CLIENT_SECRET + "&redirect_uri=" + Constants.REDIRECT);
-	   System.out.println(test);
+	   System.out.println(text);
        System.out.println("transaction handler hit");
         /* Now save the text to the database */   
     }
     
-    private void parseTextIntoHashMap(String text) {
+    private boolean parseTextIntoHashMap(String text) {
     		String[] values = text.split("%24");
-    		this.arguments.put("operation", values[0]);
-    		String[] output = values[1].split("\\+");
-    		this.arguments.put("value", output[0]);
-    		String description = "";
-    		for (int i = 1; i < output.length; i++) {
-    			description += output[i];
-    			description += " ";
+    		if (values.length > 1) {
+	    		this.arguments.put("operation", values[0]);
+	    		String[] output = values[1].split("\\+");
+	    		this.arguments.put("value", output[0]);
+	    		String description = "";
+	    		for (int i = 1; i < output.length; i++) {
+	    			description += output[i];
+	    			description += " ";
+	    		}
+	    		this.arguments.put("description", description);
+	    		return true;
     		}
-    		this.arguments.put("description", description);
+    		return false;
     }
 }
