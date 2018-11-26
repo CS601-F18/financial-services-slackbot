@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import cs601.sideproject.database.User;
+import cs601.sideproject.application.Stock;
 
 
 
@@ -55,6 +54,24 @@ public class DBManager {
 		updateStmt.execute();	
 	}
 	
+	public void createStock(Stock stock, String tableName) throws SQLException {
+		PreparedStatement updateStmt = con.prepareStatement("INSERT INTO " + tableName + " (user_id, name) VALUES (?, ?)");
+		updateStmt.setString(1, stock.getUserId());
+		updateStmt.setString(2, stock.getName());
+		updateStmt.execute();	
+	}
+	
+	public String returnSuggestions(String userId, String tableName) throws SQLException {
+		String results = "";
+		PreparedStatement updateStmt = con.prepareStatement("SELECT * FROM " + tableName + " WHERE user_id=" + "\'" + userId +"\'");
+		ResultSet result = updateStmt.executeQuery();
+		while (result.next()) {
+			results += result.getString("name");
+			results += "\n";
+		}
+		return results;
+	}
+	
 	public void testJoin(String field1, String field2, String tableName, String command) throws SQLException {
 		PreparedStatement updateStmt = con.prepareStatement("SELECT " + field1 + ", " + field2 + " FROM " + tableName + " " + command);
 		//print the updated table
@@ -88,15 +105,15 @@ public class DBManager {
 	 * 
 	 *  */
 	
-	public boolean authenticate(String accessToken) throws SQLException {
+	public boolean authenticate(String slackId) throws SQLException {
 		String selectStmt = "SELECT * FROM spusers";
 		PreparedStatement stmt = con.prepareStatement(selectStmt);
 		ResultSet result = stmt.executeQuery();
 		while (result.next()) {
-			String dbToken= result.getString("access_token");
-			System.out.println("db: " + dbToken);
-			System.out.println("access" + accessToken);
-			if (accessToken.equals(dbToken) ) {
+			String dbSlackId= result.getString("slack_id");
+			System.out.println("db slack id: " + dbSlackId);
+			System.out.println("slackId" + slackId);
+			if (slackId.equals(dbSlackId) ) {
 				return true;
 			}
 		}

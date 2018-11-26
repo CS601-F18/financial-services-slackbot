@@ -29,18 +29,6 @@ public class TransactionHandler extends HttpServlet{
 	public TransactionHandler() {
 		arguments = new HashMap<String, String>();
 	}
-	protected void doGet( HttpServletRequest request, 
-    		HttpServletResponse response)
-      throws ServletException, IOException {
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        URL url;
-        url = new URL(Constants.API_DESTINATION_RTM + "?token=" + Constants.BOT_TOKEN);
-        HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
-        connect.getResponseCode();
-        System.out.println("get request" + url);
-        System.out.println(connect.getResponseCode());
-    }
     
     protected void doPost( HttpServletRequest request, 
     		HttpServletResponse response)

@@ -26,7 +26,6 @@ public class HomeHandler extends HttpServlet {
       throws ServletException, IOException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("Hi Im michael");
         request.getAttribute("text");
         String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         System.out.println("post request");

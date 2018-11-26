@@ -54,7 +54,9 @@ public class OauthConfirmStep2 extends HttpServlet {
         User user = createUser(jsonBody);
         /* If they have the token, check DB for which user they are and log them in */
         if(checkForToken(request)) {
-        		if (authenticateByToken(db, jsonBody)) {
+        	System.out.println("check for token");
+        	System.out.println(jsonBody);
+        		if (authenticateBySlackId(db, jsonBody)) {
         			System.out.println("already authenticated");
         			try {
         				JsonObject userObject = (JsonObject) jsonBody.get("user");
@@ -64,51 +66,42 @@ public class OauthConfirmStep2 extends HttpServlet {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+        		} else {
+        			if (user != null) {
+	    	    		    try {
+	    	    				db.getDBManager().createUser(user, "spusers");
+	    	    				JsonObject userObject = (JsonObject) jsonBody.get("user");
+	            				String userId = userObject.get("id").getAsString();
+	            				response.getOutputStream().println(db.getDBManager().getAllUserTransactions(userId));
+	    	    			} catch (SQLException e) {
+	    	    				// TODO Auto-generated catch block
+	    	    				e.printStackTrace();
+	    	    			}
+	    	    	    } if (jsonBody.get("access_token") != null) {
+	    	        		String accessToken = jsonBody.get("access_token").getAsString();
+	    	        		user.setAccessToken(accessToken);
+	    	    	        Cookie cookie = addAccessTokenCookie(accessToken);
+	    	    	        response.addCookie(cookie);
+    	        		}
         		}
-        } else {
-	        	if (user != null) {
-	    		    try {
-	    				db.getDBManager().createUser(user, "spusers");
-	    				JsonObject userObject = (JsonObject) jsonBody.get("user");
-        				String userId = userObject.get("id").getAsString();
-        				response.getOutputStream().println(db.getDBManager().getAllUserTransactions(userId));
-	    			} catch (SQLException e) {
-	    				// TODO Auto-generated catch block
-	    				e.printStackTrace();
-	    			}
-	    	    }
-	        	if (jsonBody.get("access_token") != null) {
-	        		String accessToken = jsonBody.get("access_token").getAsString();
-	        		user.setAccessToken(accessToken);
-	    	        Cookie cookie = addAccessTokenCookie(accessToken);
-	    	        response.addCookie(cookie);
-	        }
         }
-        
-	    
+	        
         /* Check DB for existing users and check for null first */
     	}
     
-    protected void doPost( HttpServletRequest request, 
-    		HttpServletResponse response)
-      throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("{ \"status\": \"ok\"}");
-    }
-    
+	
     private User createUser(JsonObject jsonBody) {
         Gson g = new Gson();
         User user  = g.fromJson(jsonBody.get("user"), User.class);
         return user;
     }
-    
+    /* Add Cookie with Access Token */
     private Cookie addAccessTokenCookie(String accessToken) {
 	    	Cookie cookie = new Cookie("token", accessToken);
 	    	return cookie;
     }
     
-    /* See if they have token cookie */
+    /* See if they have a token cookie */
     private boolean checkForToken(HttpServletRequest request) {
     	  Cookie[] cookies = request.getCookies();
     	  if(cookies != null) {
@@ -122,12 +115,15 @@ public class OauthConfirmStep2 extends HttpServlet {
     	  return false;
     }
     
-    private boolean authenticateByToken(Database db, JsonObject jsonBody) {
-		if(jsonBody.get("access_token") == null) {
+    /* See if the user has the correct token */
+    private boolean authenticateBySlackId(Database db, JsonObject jsonBody) {
+		if(jsonBody.get("user") == null) {
+			System.out.println("user is null");
 			return false;
 		}
     		try {
-			if (db.getDBManager().authenticate(jsonBody.get("access_token").getAsString())) {
+			if (db.getDBManager().authenticate(jsonBody.get("user").getAsJsonObject().get("id").getAsString())) {
+				System.out.println("true");
 				return true;
 			}
 		} catch (SQLException e) {
@@ -136,6 +132,7 @@ public class OauthConfirmStep2 extends HttpServlet {
     		return false;
     }
     
+    /* If user can't authenticate by cookie, try authenticating by User ID */
     private boolean authenticateByLogin(Database db, JsonObject jsonBody) {
     	System.out.println(jsonBody.get("slack_id"));
     		try {

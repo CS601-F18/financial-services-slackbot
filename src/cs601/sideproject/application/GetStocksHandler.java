@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import cs601.sideproject.database.Database;
+import cs601.sideproject.database.Transaction;
 
 /**
  * Makes API calls to https://api.iextrading.com/1.0/stock/fb/book to 
@@ -31,6 +35,7 @@ public class GetStocksHandler extends HttpServlet{
 	protected void doPost( HttpServletRequest request, 
     		HttpServletResponse response)
       throws ServletException, IOException {
+		Stock s;
 		String stock = "";
 		/* Get stock first */
         response.setContentType("application/json");
@@ -48,6 +53,7 @@ public class GetStocksHandler extends HttpServlet{
         
         /* Then make an API Call */
         response.getWriter().println("You said: " + arguments.get("text"));
+        System.out.println("id " + arguments.get("user_id"));
         System.out.println("stock " + stock);
 	   	URL url = new URL("https://api.iextrading.com/1.0/stock/"+ stock + "/book");
         HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
@@ -73,6 +79,22 @@ public class GetStocksHandler extends HttpServlet{
 	          sb.append(output);
 	        }
 	        System.out.println (sb.toString());
+        }
+        
+        /* Add this to the User's DB now */
+        if (arguments.get("text") != null) {
+        		
+	    	 	s = new Stock(arguments.get("user_id"), (arguments.get("text")));
+	     
+	        /* Get the db connection to add the user info */
+		    Database db = Database.getInstance();
+	        
+		    try {
+				db.getDBManager().createStock(s, "stocks");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
    }
 }
