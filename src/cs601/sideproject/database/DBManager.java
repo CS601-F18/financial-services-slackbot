@@ -5,12 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import cs601.sideproject.application.Stock;
+import cs601.sideproject.application.events.Event;
+import cs601.sideproject.application.stock.Stock;
+import cs601.sideproject.application.transaction.Transaction;
 
 
 
 /**
- * Use the singleton here.
+ *
  * 
  * Must ensure isolation.
  * 	- Easy (inefficient) way is to make all methods synchronized
@@ -27,12 +29,6 @@ public class DBManager {
 	}
 	
 	/**
-	 * Create account and give password.
-	 * Generate a salt. Hash password and store it.
-	 * When you log in, give user and password. 
-	 * Get username, get salt out of row, add it to username,
-	 * then hash that. If they're the same, allow access. If not, deny.
-	 * Implement something like https://www.baeldung.com/java-password-hashing
 	 * 
 	 * @return
 	 * @throws SQLException 
@@ -48,20 +44,58 @@ public class DBManager {
 	public void createTransaction(Transaction transaction, String tableName) throws SQLException {
 		PreparedStatement updateStmt = con.prepareStatement("INSERT INTO " + tableName + " (value, operation, user_id, description) VALUES (?, ?, ?, ?)");
 		updateStmt.setFloat(1, transaction.getValue());
-		updateStmt.setString(2, transaction.getOperation());
+		if (transaction.getOperation().contains("charge") || transaction.getOperation().contains("buy")) {
+			updateStmt.setString(2, "charge");
+		} else if (transaction.getOperation().contains("credit") || transaction.getOperation().contains("sell")) {
+			updateStmt.setString(2, "credit");
+		}
 		updateStmt.setString(3, transaction.getUserId());
 		updateStmt.setString(4, transaction.getDescription());
-		updateStmt.execute();	
+		updateStmt.execute();
 	}
 	
-	public void createStock(Stock stock, String tableName) throws SQLException {
+	public void createStockSearch(Stock stock, String tableName) throws SQLException {
 		PreparedStatement updateStmt = con.prepareStatement("INSERT INTO " + tableName + " (user_id, name) VALUES (?, ?)");
 		updateStmt.setString(1, stock.getUserId());
 		updateStmt.setString(2, stock.getName());
 		updateStmt.execute();	
 	}
 	
-	public String returnSuggestions(String userId, String tableName) throws SQLException {
+	public boolean checkForStock(String tableName, String name) throws SQLException {
+		PreparedStatement userStmt;
+		userStmt = con.prepareStatement("SELECT * FROM " + tableName + " WHERE name=" + "\'" + name + "\'");
+		ResultSet userRs = userStmt.executeQuery();
+		
+		/* Check for no reults */
+		userRs.beforeFirst();
+		if (!userRs.next()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public void updateStockTransaction(String tableName, String name, String operation, int shares) throws SQLException {
+		PreparedStatement userStmt;
+		PreparedStatement updateStmt;
+		if (operation.equals("sell")) {
+			updateStmt = con.prepareStatement("UPDATE " + tableName + " SET shares = shares - " + shares + " WHERE name=" + "\'" + name +"\'");
+		} else {
+			updateStmt = con.prepareStatement("UPDATE " + tableName + " SET shares = shares + " + shares + " WHERE name=" + "\'" + name +"\'");
+		}
+		userStmt = con.prepareStatement("SELECT * FROM " + tableName + " WHERE name=" + "\'" + name +"\'");
+		updateStmt.execute();
+	}
+	
+	public void createStockTransaction(Stock stock, String tableName) throws SQLException {
+		PreparedStatement updateStmt = con.prepareStatement("INSERT INTO " + tableName + " (user_id, name, shares) VALUES (?, ?, ?)");
+		updateStmt.setString(1, stock.getUserId());
+		updateStmt.setString(2, stock.getName());
+		updateStmt.setInt(3, stock.getShares());
+		updateStmt.execute();	
+	}
+	
+	
+	public String getAllStockSuggestions(String userId, String tableName) throws SQLException {
 		String results = "";
 		PreparedStatement updateStmt = con.prepareStatement("SELECT * FROM " + tableName + " WHERE user_id=" + "\'" + userId +"\'");
 		ResultSet result = updateStmt.executeQuery();
@@ -72,22 +106,48 @@ public class DBManager {
 		return results;
 	}
 	
-	public void testJoin(String field1, String field2, String tableName, String command) throws SQLException {
-		PreparedStatement updateStmt = con.prepareStatement("SELECT " + field1 + ", " + field2 + " FROM " + tableName + " " + command);
-		//print the updated table
+	public String getAllStocksOwned(String userId, String tableName) throws SQLException {
+		String results = "";
+		PreparedStatement updateStmt = con.prepareStatement("SELECT * FROM " + tableName + " WHERE user_id=" + "\'" + userId +"\'");
 		ResultSet result = updateStmt.executeQuery();
-		
 		while (result.next()) {
-			String nameres = result.getString("name");
-			String emailres = result.getString("email");
-			//int idres = result.getInt("id");
-			System.out.printf("name: %s email: %s \n" , nameres, emailres);
+			results += result.getString("name");
+			results += ": ";
+			results += result.getInt("shares");
+			results += " shares";
+			results += "\n";
 		}
+		return results;
 	}
 	
-	public Event getEvent() {
-		return null;
+	public String getAllUserTransactions(String userId) throws SQLException {
+		String output ="";
+		String selectStmt = "SELECT * FROM transactions"; 
+		PreparedStatement stmt = con.prepareStatement(selectStmt);
+		ResultSet result = stmt.executeQuery();
+		while (result.next()) {
+			String id = result.getString("user_id");
+			if (userId.equals(id)) {
+				String operation = result.getString("operation");
+				String value = result.getString("value");
+				String description = result.getString("description");
+			
+				if (operation.contains("charge") || operation.contains("buy")) {
+					output += "<p>Charge $";
+				} else if (operation.contains("credit") || operation.contains("sell")) {
+					output += "Credit $";
+				}
+				output+= value;
+				output+= " " + description; 
+				output += "</p>";
+			}
+		}
+		if (output.equals("")) {
+			output += "<p>No transactions recorded. Please record some in slack.</p>";
+		}
+		return output;
 	}
+	
 	
 /**
  * Take as input username and password, return User object data
@@ -111,8 +171,6 @@ public class DBManager {
 		ResultSet result = stmt.executeQuery();
 		while (result.next()) {
 			String dbSlackId= result.getString("slack_id");
-			System.out.println("db slack id: " + dbSlackId);
-			System.out.println("slackId" + slackId);
 			if (slackId.equals(dbSlackId) ) {
 				return true;
 			}
@@ -133,33 +191,21 @@ public class DBManager {
 		return false;
 	}
 	
-	public String getAllUserTransactions(String userId) throws SQLException {
-		System.out.println ("User id:" + userId); 
-		String output ="";
-		String selectStmt = "SELECT * FROM transactions"; 
-		PreparedStatement stmt = con.prepareStatement(selectStmt);
-		ResultSet result = stmt.executeQuery();
+	public void testJoin(String field1, String field2, String tableName, String command) throws SQLException {
+		PreparedStatement updateStmt = con.prepareStatement("SELECT " + field1 + ", " + field2 + " FROM " + tableName + " " + command);
+		//print the updated table
+		ResultSet result = updateStmt.executeQuery();
+		
 		while (result.next()) {
-			String id = result.getString("user_id");
-			if (userId.equals(id)) {
-				String operation = result.getString("operation");
-				String value = result.getString("value");
-				String description = result.getString("description");
-			
-				if (operation.contains("charge") || operation.contains("buy")) {
-					output += "<p>Charge $";
-				} else if (operation.contains("credit") || operation.contains("sell")) {
-					output += "Credit $";
-				}
-				output+= value;
-				output+= " for " + description; 
-				output += "</p>";
-			}
+			String nameres = result.getString("name");
+			String emailres = result.getString("email");
+			//int idres = result.getInt("id");
+			System.out.printf("name: %s email: %s \n" , nameres, emailres);
 		}
-		if (output.equals("")) {
-			output += "<p>No transactions recorded. Please record some in slack.</p>";
-		}
-		return output;
+	}
+	
+	public Event getEvent() {
+		return null;
 	}
 	
 	

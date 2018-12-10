@@ -7,6 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Page for adding the slackbot to a workspace
+ * @author nkebbas
+ *
+ */
 public class Slackbot extends HttpServlet {
 
     protected void doGet( HttpServletRequest request, 
@@ -26,9 +31,5 @@ public class Slackbot extends HttpServlet {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println("{ \"status\": \"ok\"}");
-        System.out.println("post request");
-        System.out.println(request.getContentLength());
-        System.out.println(request.getQueryString());
-        System.out.println(request.getParameter("Token"));
     }
 }

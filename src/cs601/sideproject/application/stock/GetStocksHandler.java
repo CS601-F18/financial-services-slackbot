@@ -1,4 +1,4 @@
-package cs601.sideproject.application;
+package cs601.sideproject.application.stock;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import cs601.sideproject.database.Database;
-import cs601.sideproject.database.Transaction;
 
 /**
  * Makes API calls to https://api.iextrading.com/1.0/stock/fb/book to 
@@ -37,24 +36,24 @@ public class GetStocksHandler extends HttpServlet{
       throws ServletException, IOException {
 		Stock s;
 		String stock = "";
+		
 		/* Get stock first */
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
-        request.getAttribute("text");
-        /* Cite: https://stackoverflow.com/questions/8100634/get-the-post-request-body-from-httpservletrequest */
+       
         String text = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(text);
         String[] parameters = text.split("&");
+        
         for (String i: parameters) {
-        		System.out.println(i);
         		String[] splitArguments = i.split("=");
         		arguments.put(splitArguments[0], splitArguments[1]);	
         }
+        
         stock = arguments.get("text");
         
         /* Then make an API Call */
         response.getWriter().println("You said: " + arguments.get("text"));
-        System.out.println("id " + arguments.get("user_id"));
-        System.out.println("stock " + stock);
 	   	URL url = new URL("https://api.iextrading.com/1.0/stock/"+ stock + "/book");
         HttpsURLConnection connect = (HttpsURLConnection) url.openConnection();
         connect.connect();
@@ -90,7 +89,7 @@ public class GetStocksHandler extends HttpServlet{
 		    Database db = Database.getInstance();
 	        
 		    try {
-				db.getDBManager().createStock(s, "stocks");
+				db.getDBManager().createStockSearch(s, "stocksearch");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

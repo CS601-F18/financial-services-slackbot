@@ -15,7 +15,7 @@ import com.google.gson.JsonParser;
 
 /** 
  * Hits the https://slack.com/api/rtm.connect endpoint. 
- * Bot will message user.
+ * Currently just logs data in the chat that the bot is a part of.
  * 
  * **/
 public class RealTimeMessaging extends HttpServlet{

@@ -1,4 +1,4 @@
-package cs601.sideproject.application;
+package cs601.sideproject.application.cryptocurrency;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +34,6 @@ public class GetPricesHandler extends HttpServlet {
 		        while ((output = br.readLine()) != null) {
 		          sb.append(output);
 		        }
-		        System.out.println (sb.toString());
 		        JsonParser jp = new JsonParser();
 		        JsonObject jsonTree = jp.parse(sb.toString()).getAsJsonObject();
 		        JsonObject bpi = jsonTree.get("bpi").getAsJsonObject();
@@ -48,7 +47,6 @@ public class GetPricesHandler extends HttpServlet {
 		        while ((output = br.readLine()) != null) {
 		          sb.append(output);
 		        }
-		        System.out.println (sb.toString());
 	        }
 	   }
 }

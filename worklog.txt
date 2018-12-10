@@ -1,0 +1,11 @@
+10/28 - Intake and planning - 2 hours
+10/30 - ngrok and slack API setup - 3 Hours
+10/31-11/2 - DB Setup and integration - 2 Hours
+11/2-11-9 - Authentication (App and User) - 13 Hours
+11/9-11/15 - Transactions (Slack, DB, Web App) - 15 Hours
+11/16-11/22 - Stock API (Search stocks, Stock suggestions) 5 Hours
+11/22 - 11/24 - Crypto API 2 Hours
+12/9 - Dashboard, Stocks Owned Functionality 5 Hours
+12/9 - 12/10 - Refactoring, README, Docs 5 Hours
+
+Total: ~52 Hours

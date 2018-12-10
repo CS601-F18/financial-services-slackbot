@@ -1,5 +1,10 @@
-package cs601.sideproject.database;
+package cs601.sideproject.application.transaction;
 
+/**
+ * Object for transactions
+ * @author nkebbas
+ *
+ */
 public class Transaction {
 	private int id;
 	private String userId;
@@ -7,10 +12,11 @@ public class Transaction {
 	private String description;
 	private String operation;
 	
-	public Transaction(String userId, float value, String operation) {
+	public Transaction(String userId, float value, String operation, String description) {
 		this.userId = userId;
 		this.value = value;
 		this.operation = operation;
+		this.description = description;
 	}
 	
 	public int getId() {

@@ -10,16 +10,13 @@ import cs601.sideproject.database.Database;
 public class StartServer {
 
 	public static void main(String[] args){
-	    JettyServer jettyServer = new JettyServer();
+	    FinancialServicesBotServer jettyServer = new FinancialServicesBotServer();
 	    try {
 			jettyServer.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	    System.out.println("server started");
-	    /* Create a connection to the database. 
-	     * Could also move this into separate (singleton) class and 
-	     * perform this logic there.  */
+	    /* Create a connection to the database. */
 	    Database db = Database.getInstance();
 	    db.connect();
 	}

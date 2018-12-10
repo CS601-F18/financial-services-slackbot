@@ -1,10 +1,17 @@
-package cs601.sideproject.application;
+package cs601.sideproject.application.stock;
 
+/**
+ * Stock object
+ * @author nkebbas
+ *
+ */
 public class Stock {
 	private int id;
 	private String userId;
 	private String name;
+	private int shares;
 	
+
 	public Stock(String userId, String name) {
 		this.userId = userId;
 		this.setName(name);
@@ -32,6 +39,14 @@ public class Stock {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getShares() {
+		return shares;
+	}
+
+	public void setShares(int shares) {
+		this.shares = shares;
 	}
 	
 	public String toString() {

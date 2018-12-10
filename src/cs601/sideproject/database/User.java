@@ -1,5 +1,10 @@
 package cs601.sideproject.database;
 
+/**
+ * User object
+ * @author nkebbas
+ *
+ */
 public class User {
 	private String id;
 	private String name;

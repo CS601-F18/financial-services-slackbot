@@ -1,6 +1,7 @@
 package cs601.sideproject.database;
 
 /**
+ * Database that can be called by the getInstance method
  * Use the singleton here.
  * 
  * @author nkebbas
@@ -45,7 +46,6 @@ public final class Database {
 		String urlString = "jdbc:mysql://127.0.0.1:3306/"+DBConstants.DB;
 		//Must set time zone explicitly in newer versions of mySQL.
 		String timeZoneSettings = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-
 		try {
 			con = DriverManager.getConnection(urlString+timeZoneSettings,
 					DBConstants.USERNAME,

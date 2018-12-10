@@ -9,7 +9,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+/**
+ * Sign in page servlet
+ * @author nkebbas
+ *
+ */
 public class SignInHandler extends HttpServlet {
 	protected void doGet( HttpServletRequest request, 
     		HttpServletResponse response)
@@ -20,7 +24,7 @@ public class SignInHandler extends HttpServlet {
         		+ "<a href=\"https://slack.com/oauth/authorize?scope=identity.basic&client_id=" + Constants.CLIENT_ID + "&redirect_uri=" + Constants.REDIRECT+ "\">"
         		+ "<img src=\"https://api.slack.com/img/sign_in_with_slack.png\" />"
         		+ "</a>");
-    }
+    		}
     
     protected void doPost( HttpServletRequest request, 
     		HttpServletResponse response)
