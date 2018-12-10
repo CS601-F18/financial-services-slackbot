@@ -11,7 +11,8 @@ import cs601.sideproject.application.Constants;
 
 /**
  * This authenticates the app to retrieve the authentication token necessary 
- * for the bot to work in the workspace. 
+ * for the bot to work in the workspace. This will only fire when the application
+ * is being authorized, not when the user is signing in.
  * @author nkebbas
  *
  */
@@ -22,6 +23,7 @@ public class OauthConfirm extends HttpServlet {
 		System.out.println("OAuthConfirm Hit. Redirecting.");
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getOutputStream().println("success!");
         response.sendRedirect("https://slack.com/oauth/authorize?client_id=" + Constants.CLIENT_ID + "&scope=" + Constants.SCOPE + "&redirect_uri=" + Constants.REDIRECT);
     }
     

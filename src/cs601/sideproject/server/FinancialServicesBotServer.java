@@ -5,6 +5,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
+import cs601.sideproject.application.Constants;
 import cs601.sideproject.application.HomeHandler;
 import cs601.sideproject.application.RealTimeMessaging;
 import cs601.sideproject.application.SignInHandler;
@@ -32,7 +33,7 @@ public class FinancialServicesBotServer {
         QueuedThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout);
         server = new Server(threadPool);
         ServerConnector connector = new ServerConnector(server);
-        connector.setPort(5000);
+        connector.setPort(Constants.PORT);
         server.setConnectors(new Connector[] { connector });
 
         ServletHandler servletHandler = new ServletHandler();
@@ -40,6 +41,7 @@ public class FinancialServicesBotServer {
 
         servletHandler.addServletWithMapping(HomeHandler.class, "/");
         servletHandler.addServletWithMapping(Slackbot.class, "/slackbot");
+        servletHandler.addServletWithMapping(Slackbot.class, "/authorize");
         servletHandler.addServletWithMapping(TransactionHandler.class, "/transaction");
         servletHandler.addServletWithMapping(RecordStockHandler.class, "/stocktransaction");
         servletHandler.addServletWithMapping(GetPricesHandler.class, "/prices");

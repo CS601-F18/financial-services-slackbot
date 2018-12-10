@@ -40,6 +40,7 @@ public class Dashboard extends HttpServlet {
 	protected void doGet( HttpServletRequest request, 
     		HttpServletResponse response)
       throws ServletException, IOException {
+		System.out.println("here");
 		/* Must Receive from Signin */
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
@@ -62,8 +63,9 @@ public class Dashboard extends HttpServlet {
         /* If they have the token, check DB for which user they are and log them in */
 
         		if (authenticateBySlackId(db, jsonBody)) {
+        			System.out.println("authenticated by slack Id");
         			JsonObject userObject = (JsonObject) jsonBody.get("user");
-					displayDashboard(response, userObject, db);
+				displayDashboard(response, userObject, db);
         		} else {
         			if (user != null) {
 	    	    		    try {
@@ -73,12 +75,10 @@ public class Dashboard extends HttpServlet {
 	    	    			} catch (SQLException e) {
 	    	    				e.printStackTrace();
 	    	    			}
-	    	    	    } if (jsonBody.get("access_token") != null) {
-	    	        		String accessToken = jsonBody.get("access_token").getAsString();
-	    	        		user.setAccessToken(accessToken);
-	    	    	        Cookie cookie = addAccessTokenCookie(accessToken);
-	    	    	        response.addCookie(cookie);
-    	        		}
+	    	    	    } else {
+	    	    	    		response.getOutputStream().print("<p>Bot successfully added to workspace. Please <a href=\"\\'\"/signin\"\\'\">login to access your dashboard.</p>");
+	    	    	    }
+        			
         		}
         }
 	        
@@ -93,26 +93,6 @@ public class Dashboard extends HttpServlet {
         Gson g = new Gson();
         User user  = g.fromJson(jsonBody.get("user"), User.class);
         return user;
-    }
-    
-    /* Add Cookie with Access Token */
-    private Cookie addAccessTokenCookie(String accessToken) {
-	    	Cookie cookie = new Cookie("token", accessToken);
-	    	return cookie;
-    }
-    
-    /* See if they have a token cookie */
-    private boolean checkForToken(HttpServletRequest request) {
-    	  Cookie[] cookies = request.getCookies();
-    	  if(cookies != null) {
-    	      for (int i = 0; i < cookies.length; i++) {
-    	          Cookie cookie=cookies[i];
-    	          if (cookie.getName().equals("token")){
-    	        	  	return true;
-    	          }
-    	       }
-    	   }
-    	  return false;
     }
     
     
@@ -130,20 +110,6 @@ public class Dashboard extends HttpServlet {
 		}
     		return false;
     }
-    
-    /* If user can't authenticate by cookie, try authenticating by User ID */
-    private boolean authenticateByLogin(Database db, JsonObject jsonBody) {
-    	System.out.println(jsonBody.get("slack_id"));
-    		try {
-			if (db.getDBManager().authenticate(jsonBody.get("slack_id").getAsString())) {
-				return true;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    		return false;
-    	}
     
     private void displayDashboard(HttpServletResponse response, JsonObject userObject, Database db) throws IOException {
 		String userId = userObject.get("id").getAsString();

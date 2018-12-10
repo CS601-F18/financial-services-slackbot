@@ -20,9 +20,7 @@ public class Slackbot extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(""
-        		+ "<a href=\"https://slack.com/oauth/authorize?scope=identity.basic&client_id=" + Constants.CLIENT_ID + "\">"
-        		+ "<img src=\"https://api.slack.com/img/sign_in_with_slack.png\" />"
-        		+ "</a>");
+        		+ "<a href=\"https://slack.com/oauth/authorize?scope=incoming-webhook&client_id=378520430422.465486620272\"><img alt=\"Add to Slack\" height=\"40\" width=\"139\" src=\"https://platform.slack-edge.com/img/add_to_slack.png\" srcset=\"https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x\" /></a>");
     }
     
     protected void doPost( HttpServletRequest request, 
